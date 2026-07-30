@@ -1,0 +1,41 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://example.com/axiom-portico/request.schema.json",
+  "title": "AxiomDiagnosticRequest",
+  "description": "Request body for POST /api/diagnose. One entry per axiom, all four required.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["epistemology", "ethics", "ontology", "governance"],
+  "properties": {
+    "epistemology": { "$ref": "#/definitions/AxiomInput" },
+    "ethics": { "$ref": "#/definitions/AxiomInput" },
+    "ontology": { "$ref": "#/definitions/AxiomInput" },
+    "governance": { "$ref": "#/definitions/AxiomInput" }
+  },
+  "definitions": {
+    "AxiomInput": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["stance", "conviction", "breaking_point"],
+      "properties": {
+        "stance": {
+          "type": "string",
+          "enum": ["A", "B", "C"],
+          "description": "The stated default. A and B are the two opposing primaries; C re-architects the question at system level."
+        },
+        "conviction": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 100,
+          "description": "How much weight the participant believes this default carries."
+        },
+        "breaking_point": {
+          "type": "string",
+          "minLength": 12,
+          "maxLength": 600,
+          "description": "The condition that would make the participant abandon the stance. The strongest signal in the payload."
+        }
+      }
+    }
+  }
+}

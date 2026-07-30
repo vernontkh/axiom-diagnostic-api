@@ -1,0 +1,18 @@
+{
+  "name": "axiom-portico",
+  "version": "1.0.0",
+  "private": true,
+  "description": "A four-axiom self-audit. Measures the distance between what you claim and where you would fold.",
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "dev": "vercel dev",
+    "test": "node --test test/*.test.js",
+    "build": "echo 'Static front end and serverless function \u2014 no build step required.'"
+  },
+  "dependencies": {
+    "@google/genai": "^2.14.0"
+  }
+}

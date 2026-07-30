@@ -1,0 +1,62 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://example.com/axiom-portico/response.schema.json",
+  "title": "AxiomDiagnosticResponse",
+  "description": "A 200 response from POST /api/diagnose. Errors use error.schema.json.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "composite_archetype",
+    "axiom_breakdown",
+    "executive_summary",
+    "rigidity_index",
+    "blind_spots",
+    "stress_response_prediction"
+  ],
+  "properties": {
+    "composite_archetype": {
+      "type": "string",
+      "description": "Two to four words describing how this configuration resolves trade-offs."
+    },
+    "axiom_breakdown": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "epistemology_label",
+        "ethics_label",
+        "ontology_label",
+        "governance_label"
+      ],
+      "properties": {
+        "epistemology_label": { "type": "string" },
+        "ethics_label": { "type": "string" },
+        "ontology_label": { "type": "string" },
+        "governance_label": { "type": "string" }
+      }
+    },
+    "executive_summary": {
+      "type": "string",
+      "description": "Two to three sentences on trade-offs under pressure."
+    },
+    "rigidity_index": {
+      "type": "string",
+      "enum": [
+        "Low (Adaptive Operator)",
+        "Moderate (Balanced)",
+        "High (Dogmatic)"
+      ],
+      "description": "Judged on the specificity of the fracture points, not on the height of the conviction values."
+    },
+    "blind_spots": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 4,
+      "items": { "type": "string" },
+      "description": "Each item names one friction between a stated stance and a stated fracture point."
+    },
+    "stress_response_prediction": {
+      "type": "string",
+      "description": "Likely first reaction when the primary system fails without warning."
+    }
+  }
+}

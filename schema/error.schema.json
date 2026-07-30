@@ -1,0 +1,43 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://example.com/axiom-portico/error.schema.json",
+  "title": "AxiomDiagnosticError",
+  "description": "Every non-2xx response from POST /api/diagnose uses this shape.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["error"],
+  "properties": {
+    "error": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["code", "message"],
+      "properties": {
+        "code": {
+          "type": "string",
+          "enum": [
+            "METHOD_NOT_ALLOWED",
+            "UNSUPPORTED_MEDIA_TYPE",
+            "RATE_LIMITED",
+            "NOT_CONFIGURED",
+            "MALFORMED_JSON",
+            "VALIDATION_FAILED",
+            "MODEL_UNAVAILABLE",
+            "MODEL_TIMEOUT",
+            "MALFORMED_DIAGNOSIS",
+            "INCOMPLETE_DIAGNOSIS"
+          ],
+          "description": "Stable machine-readable code. Safe to branch on."
+        },
+        "message": {
+          "type": "string",
+          "description": "Plain-language explanation, safe to show a user. Carries no internal detail."
+        },
+        "fields": {
+          "type": "object",
+          "description": "Present only on VALIDATION_FAILED. Keys are dotted field paths such as 'ethics.conviction'; values are the message for that field.",
+          "additionalProperties": { "type": "string" }
+        }
+      }
+    }
+  }
+}

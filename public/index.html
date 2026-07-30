@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Portico — a four-axiom self-audit</title>
+<meta name="description" content="Four questions about how you decide things, and four questions about where you would fold. The gap between the two is the finding.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Marcellus&family=Work+Sans:ital,wght@0,300;0,400;0,500;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ─────────────────────────────────────────────────────────────
+   Tokens. Quarried, not invented: weathered limestone, marble,
+   basalt, oxidised bronze. Iron oxide appears nowhere except
+   fracture and friction, so its presence always means one thing.
+   ───────────────────────────────────────────────────────────── */
+:root{
+  --limestone:#e7e4da;
+  --marble:#f3f1ea;
+  --marble-deep:#e0ddd2;
+  --basalt:#2b302c;
+  --verdigris:#4f7368;
+  --verdigris-lift:#63897d;
+  --iron:#8f4b33;
+  --patina:#8e8e80;
+
+  --display:"Marcellus",Georgia,serif;
+  --body:"Work Sans",system-ui,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,monospace;
+
+  --rule:1px solid rgba(43,48,44,.14);
+  --gap:clamp(1.5rem,4vw,2.75rem);
+}
+
+*,*::before,*::after{box-sizing:border-box;}
+
+body{
+  margin:0;
+  background:var(--limestone);
+  color:var(--basalt);
+  font:400 1rem/1.65 var(--body);
+  -webkit-font-smoothing:antialiased;
+  /* The faintest quarry grain. Removing this makes the page feel like paper. */
+  background-image:radial-gradient(rgba(43,48,44,.035) 1px,transparent 1px);
+  background-size:4px 4px;
+}
+
+.wrap{max-width:1180px;margin:0 auto;padding:clamp(2.5rem,7vw,5rem) clamp(1.25rem,4vw,2.5rem) 4rem;}
+
+/* Shared atoms ─────────────────────────────────────────────── */
+.eyebrow{
+  font:500 .6875rem/1 var(--mono);
+  letter-spacing:.18em;
+  text-transform:uppercase;
+  color:var(--patina);
+  margin:0;
+}
+h1,h2,h3{font-family:var(--display);font-weight:400;letter-spacing:.01em;margin:0;}
+
+/* Masthead ─────────────────────────────────────────────────── */
+.masthead{max-width:44rem;margin-bottom:clamp(2.5rem,6vw,4rem);}
+.masthead h1{
+  font-size:clamp(2.5rem,7vw,4.25rem);
+  line-height:1.02;
+  margin:.75rem 0 1.25rem;
+}
+.masthead h1 em{font-style:normal;color:var(--verdigris);}
+.masthead p{max-width:36rem;margin:0 0 1rem;font-size:1.0625rem;color:#454b46;}
+.masthead p:last-child{margin-bottom:0;}
+
+/* ─────────────────────────────────────────────────────────────
+   The portico. Four columns, one per axiom. Taper is real
+   entasis, narrower at the capital than the base.
+   ───────────────────────────────────────────────────────────── */
+.portico{
+  display:grid;
+  gap:var(--gap);
+  grid-template-columns:1fr;
+  border:0;margin:0;padding:0;
+}
+@media (min-width:640px){.portico{grid-template-columns:repeat(2,1fr);}}
+@media (min-width:1024px){.portico{grid-template-columns:repeat(4,1fr);}}
+
+.column{
+  border:0;margin:0;padding:0;
+  min-width:0;
+  display:flex;flex-direction:column;
+  opacity:0;transform:translateY(18px);
+  animation:rise .7s cubic-bezier(.2,.8,.25,1) forwards;
+}
+.column:nth-child(1){animation-delay:.05s;}
+.column:nth-child(2){animation-delay:.17s;}
+.column:nth-child(3){animation-delay:.29s;}
+.column:nth-child(4){animation-delay:.41s;}
+@keyframes rise{to{opacity:1;transform:none;}}
+
+.capital{
+  background:var(--marble);
+  border:var(--rule);
+  border-bottom:2px solid var(--verdigris);
+  padding:.875rem 1rem 1rem;
+}
+.capital .numeral{
+  font:500 .75rem/1 var(--mono);
+  letter-spacing:.16em;
+  color:var(--verdigris);
+}
+.capital h2{font-size:1.375rem;margin:.4rem 0 .3rem;}
+.capital .question{margin:0;font-size:.875rem;line-height:1.45;color:#5b615c;}
+
+/* The shaft doubles as the conviction gauge. Stone rises from the
+   base as weight is added — the flutes read through the fill. */
+.gauge{
+  position:relative;
+  height:132px;
+  margin:0;
+  background:var(--marble-deep);
+  clip-path:polygon(7% 0,93% 0,100% 100%,0 100%);
+  overflow:hidden;
+}
+.gauge__fill{
+  position:absolute;left:0;right:0;bottom:0;
+  height:var(--fill,0%);
+  background:linear-gradient(180deg,var(--verdigris-lift),var(--verdigris));
+  transition:height .45s cubic-bezier(.2,.75,.2,1);
+}
+.gauge__flutes{
+  position:absolute;inset:0;
+  background:repeating-linear-gradient(90deg,
+    rgba(43,48,44,.09) 0 1px,transparent 1px 9px);
+  mix-blend-mode:multiply;
+}
+/* The exact figure lives in the label, where it always has contrast.
+   The shaft carries magnitude; the label carries the number. */
+.field label .value{color:var(--verdigris);}
+
+.stack{
+  background:var(--marble);
+  border:var(--rule);
+  border-top:0;
+  padding:1rem;
+  display:flex;flex-direction:column;gap:1.125rem;
+  flex:1;
+}
+.field > .eyebrow{margin-bottom:.5rem;}
+
+input[type=range]{
+  width:100%;height:1.5rem;margin:0;
+  background:transparent;-webkit-appearance:none;appearance:none;cursor:pointer;
+}
+input[type=range]::-webkit-slider-runnable-track{height:2px;background:rgba(43,48,44,.2);}
+input[type=range]::-moz-range-track{height:2px;background:rgba(43,48,44,.2);}
+input[type=range]::-webkit-slider-thumb{
+  -webkit-appearance:none;appearance:none;
+  width:1rem;height:1rem;margin-top:-.4375rem;border-radius:50%;
+  background:var(--verdigris);border:2px solid var(--marble);
+}
+input[type=range]::-moz-range-thumb{
+  width:1rem;height:1rem;border-radius:50%;
+  background:var(--verdigris);border:2px solid var(--marble);
+}
+
+/* Stances ──────────────────────────────────────────────────── */
+.stances{display:flex;flex-direction:column;gap:.375rem;}
+.stance{
+  display:grid;grid-template-columns:auto 1fr;gap:.625rem;
+  padding:.625rem .6875rem;
+  border:1px solid rgba(43,48,44,.13);
+  background:rgba(255,255,255,.45);
+  cursor:pointer;
+  transition:border-color .18s,background .18s;
+}
+.stance:hover{border-color:var(--verdigris);}
+.stance input{
+  appearance:none;-webkit-appearance:none;
+  width:.875rem;height:.875rem;margin:.3125rem 0 0;
+  border:1px solid var(--patina);border-radius:50%;background:transparent;
+}
+.stance input:checked{border-color:var(--verdigris);background:var(--verdigris);box-shadow:inset 0 0 0 3px var(--marble);}
+.stance:has(input:checked){border-color:var(--verdigris);background:rgba(79,115,104,.08);}
+.stance__key{display:block;font:500 .6875rem/1 var(--mono);letter-spacing:.1em;color:var(--verdigris);}
+.stance__text{display:block;font-size:.875rem;line-height:1.45;margin:.3rem 0 0;}
+
+/* The fracture line. Plain hairline until a fracture point is
+   written, then it cracks. */
+.fracture{margin:0;border:0;height:1px;background:rgba(43,48,44,.16);}
+.column[data-fractured="true"] .fracture{
+  height:2px;background:transparent;
+  background-image:repeating-linear-gradient(90deg,
+    var(--iron) 0 7px,transparent 7px 11px,var(--iron) 11px 22px,transparent 22px 25px);
+}
+
+textarea{
+  width:100%;min-height:5.5rem;resize:vertical;
+  font:400 .875rem/1.55 var(--body);color:var(--basalt);
+  padding:.625rem .6875rem;
+  background:rgba(255,255,255,.5);
+  border:1px solid rgba(43,48,44,.16);
+}
+textarea::placeholder{color:#a3a396;}
+.count{font:400 .6875rem/1 var(--mono);color:var(--patina);text-align:right;margin:.375rem 0 0;}
+
+:is(input,textarea,button,a):focus-visible{
+  outline:2px solid var(--verdigris);outline-offset:2px;
+}
+
+.column[data-invalid="true"] .capital{border-bottom-color:var(--iron);}
+.note:empty{display:none;}
+.note{margin:.375rem 0 0;font:400 .8125rem/1.4 var(--body);color:var(--iron);}
+
+/* Stylobate — the step the whole thing stands on ───────────── */
+.stylobate{
+  margin-top:calc(var(--gap) - .25rem);
+  padding:1.75rem clamp(1.25rem,4vw,2rem);
+  background:var(--marble-deep);
+  border:var(--rule);
+  display:flex;flex-wrap:wrap;align-items:center;gap:1.25rem;
+  justify-content:space-between;
+}
+.stylobate p{margin:0;font-size:.875rem;color:#5b615c;max-width:34rem;}
+button.run{
+  font:500 .8125rem/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;
+  padding:1rem 2rem;color:var(--marble);background:var(--basalt);
+  border:0;cursor:pointer;transition:background .18s;
+}
+button.run:hover:not(:disabled){background:var(--verdigris);}
+button.run:disabled{background:var(--patina);cursor:progress;}
+
+.alert{
+  margin:1.25rem 0 0;padding:.875rem 1rem;
+  border-left:3px solid var(--iron);background:rgba(143,75,51,.07);
+  font-size:.9375rem;
+}
+.alert:empty{display:none;}
+
+/* ─────────────────────────────────────────────────────────────
+   The pediment. It only rises once all four columns stand.
+   ───────────────────────────────────────────────────────────── */
+.result{margin-bottom:clamp(2.5rem,6vw,4rem);}
+.pediment{
+  height:clamp(48px,7vw,84px);
+  background:var(--marble);
+  clip-path:polygon(50% 0,100% 100%,0 100%);
+}
+.entablature{
+  background:var(--marble);
+  border-top:2px solid var(--verdigris);
+  padding:clamp(1.5rem,4vw,2.5rem);
+}
+.entablature h2{font-size:clamp(1.875rem,4.5vw,2.875rem);line-height:1.1;margin:.5rem 0 .875rem;}
+.chip{
+  display:inline-block;margin:0 0 1.25rem;
+  font:500 .6875rem/1 var(--mono);letter-spacing:.1em;text-transform:uppercase;
+  padding:.5rem .75rem;border:1px solid var(--verdigris);color:var(--verdigris);
+}
+.entablature .summary{margin:0;font-size:1.0625rem;max-width:44rem;}
+
+.labels{display:grid;gap:1px;background:rgba(43,48,44,.14);grid-template-columns:1fr;}
+@media (min-width:640px){.labels{grid-template-columns:repeat(2,1fr);}}
+@media (min-width:1024px){.labels{grid-template-columns:repeat(4,1fr);}}
+.labels div{background:var(--marble);padding:1rem;}
+.labels h3{font-size:1.0625rem;margin:.4rem 0 0;}
+
+.panels{display:grid;gap:1px;margin-top:1px;background:rgba(43,48,44,.14);grid-template-columns:1fr;}
+@media (min-width:768px){.panels{grid-template-columns:3fr 2fr;}}
+.panels section{background:var(--marble);padding:clamp(1.25rem,3vw,1.75rem);}
+.panels h3{font-size:1.25rem;margin:.5rem 0 .875rem;}
+.panels ul{margin:0;padding:0;list-style:none;}
+.panels li{position:relative;padding-left:1.375rem;margin-bottom:.875rem;font-size:.9375rem;}
+.panels li:last-child{margin-bottom:0;}
+.panels li::before{
+  content:"";position:absolute;left:0;top:.55rem;
+  width:.5rem;height:2px;background:var(--iron);
+}
+.panels p{margin:0;font-size:.9375rem;}
+
+/* Inscription — the one thing that should outlast the result ── */
+.inscription{
+  margin-top:clamp(2.5rem,6vw,4rem);padding-top:1.75rem;
+  border-top:var(--rule);
+  max-width:40rem;
+}
+.inscription p{margin:.75rem 0 0;font-size:.875rem;line-height:1.6;color:#5b615c;}
+.inscription p:first-of-type{margin-top:.875rem;}
+
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap;}
+
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.001ms!important;animation-delay:0s!important;transition-duration:.001ms!important;}
+  .column{opacity:1;transform:none;}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="masthead">
+    <p class="eyebrow">Four-axiom self-audit</p>
+    <h1>Everyone can state a principle.<br>Fewer can state <em>where it breaks.</em></h1>
+    <p>Four columns, one for each axiom your decisions rest on. For each, name your default, say how much weight it carries, and then name the condition that would make you abandon it.</p>
+    <p>The audit reads the second answer against the first. That distance — between what you claim and where you would fold — is the whole finding.</p>
+  </header>
+
+  <!-- The pediment rises only once all four columns stand. -->
+  <section class="result" id="result" hidden aria-live="polite">
+    <div class="pediment" aria-hidden="true"></div>
+    <div class="entablature">
+      <p class="eyebrow">Composite archetype</p>
+      <h2 id="r-archetype"></h2>
+      <p class="chip" id="r-rigidity"></p>
+      <p class="summary" id="r-summary"></p>
+    </div>
+    <div class="labels">
+      <div><p class="eyebrow">I · Epistemology</p><h3 id="r-epistemology"></h3></div>
+      <div><p class="eyebrow">II · Ethics</p><h3 id="r-ethics"></h3></div>
+      <div><p class="eyebrow">III · Ontology</p><h3 id="r-ontology"></h3></div>
+      <div><p class="eyebrow">IV · Governance</p><h3 id="r-governance"></h3></div>
+    </div>
+    <div class="panels">
+      <section>
+        <p class="eyebrow">Internal friction</p>
+        <h3>Where your answers disagree with each other</h3>
+        <ul id="r-blindspots"></ul>
+      </section>
+      <section>
+        <p class="eyebrow">Under load</p>
+        <h3>When the system fails without warning</h3>
+        <p id="r-stress"></p>
+      </section>
+    </div>
+  </section>
+
+  <form id="audit" novalidate>
+    <fieldset class="portico">
+      <legend class="sr">The four axioms</legend>
+      <!-- Columns are written out rather than templated: four fixed
+           supports, not a list that might one day have five. -->
+    </fieldset>
+
+    <div class="stylobate">
+      <p>Nothing is stored. The audit runs once, returns a reading, and keeps no record of your answers.</p>
+      <button type="submit" class="run" id="run">Run the audit</button>
+    </div>
+    <div class="alert" id="alert" role="alert"></div>
+  </form>
+
+  <div class="inscription">
+    <p class="eyebrow">On reading the result</p>
+    <p>This describes one set of answers given on one afternoon. It is not a type, and you do not have one.</p>
+    <p>Its only legitimate use is the next question it makes you ask — of yourself, or aloud with someone whose answers differ from yours. The moment a label becomes the reason you stopped examining something, it has done the opposite of its job. Discard it and answer again.</p>
+  </div>
+
+</div>
+
+<script>
+"use strict";
+
+/* The four axioms, written as data because the interface, the payload and the
+   result rendering all need the same names in the same order. */
+const AXIOMS = [
+  {
+    key: "epistemology", numeral: "I", name: "Epistemology",
+    question: "How you decide something is true.",
+    stances: [
+      ["A", "First principles", "I reason from foundations I trust before I look at the data."],
+      ["B", "Measured evidence", "I trust what has been measured, and distrust what has not."],
+      ["C", "Working systems", "I trust whatever survives contact with a working system over time."]
+    ],
+    prompt: "What kind of finding would override your usual way of establishing truth?"
+  },
+  {
+    key: "ethics", numeral: "II", name: "Ethics",
+    question: "How you decide something is permissible.",
+    stances: [
+      ["A", "Principle", "Some lines hold regardless of what the outcome would be."],
+      ["B", "Consequence", "The right act is the one with the best net outcome for those affected."],
+      ["C", "Protocol", "I set the exceptions in advance, in calm conditions, and follow them under pressure."]
+    ],
+    prompt: "What pressure has actually moved this line before, or would?"
+  },
+  {
+    key: "ontology", numeral: "III", name: "Ontology",
+    question: "How you process what you cannot control.",
+    stances: [
+      ["A", "Agency", "Most constraints are softer than they look, so I push."],
+      ["B", "Acceptance", "I spend effort only where I have leverage, and let the rest go."],
+      ["C", "Structure", "Outcomes are mostly set by conditions upstream of anyone's intent."]
+    ],
+    prompt: "At what point do you stop pushing, or start again?"
+  },
+  {
+    key: "governance", numeral: "IV", name: "Governance",
+    question: "Where you place responsibility for a failure.",
+    stances: [
+      ["A", "The person", "Name the owner. Systems do not act, people do."],
+      ["B", "The system", "If the system permitted the failure, the system is the failure."],
+      ["C", "The incentive", "People follow what is rewarded, so change the reward rather than the rule."]
+    ],
+    prompt: "What kind of failure would make you place the blame elsewhere?"
+  }
+];
+
+const MIN_FRACTURE = 12;
+const MAX_FRACTURE = 600;
+
+const portico = document.querySelector(".portico");
+const form = document.getElementById("audit");
+const runButton = document.getElementById("run");
+const alertBox = document.getElementById("alert");
+const result = document.getElementById("result");
+
+/* ── Build the portico ─────────────────────────────────────── */
+for (const axiom of AXIOMS) {
+  const column = document.createElement("fieldset");
+  column.className = "column";
+  column.dataset.axiom = axiom.key;
+
+  column.innerHTML = `
+    <legend class="sr">${axiom.numeral}. ${axiom.name}</legend>
+    <div class="capital">
+      <span class="numeral">${axiom.numeral}</span>
+      <h2>${axiom.name}</h2>
+      <p class="question">${axiom.question}</p>
+    </div>
+    <div class="gauge" aria-hidden="true">
+      <div class="gauge__fill" data-fill></div>
+      <div class="gauge__flutes"></div>
+    </div>
+    <div class="stack">
+      <div class="field">
+        <p class="eyebrow" id="${axiom.key}-stance-label">Your default</p>
+        <div class="stances" role="radiogroup" aria-labelledby="${axiom.key}-stance-label">
+          ${axiom.stances.map(([letter, title, text]) => `
+            <label class="stance">
+              <input type="radio" name="${axiom.key}-stance" value="${letter}">
+              <span>
+                <span class="stance__key">${letter} · ${title}</span>
+                <span class="stance__text">${text}</span>
+              </span>
+            </label>`).join("")}
+        </div>
+        <p class="note" data-note="stance"></p>
+      </div>
+
+      <div class="field">
+        <label class="eyebrow" for="${axiom.key}-conviction">Conviction — <span class="value" data-read>50</span>% of your weight</label>
+        <input type="range" id="${axiom.key}-conviction" min="0" max="100" step="1" value="50" data-conviction>
+      </div>
+
+      <hr class="fracture">
+
+      <div class="field">
+        <label class="eyebrow" for="${axiom.key}-fracture">Fracture point</label>
+        <textarea id="${axiom.key}-fracture" data-fracture maxlength="${MAX_FRACTURE}"
+          placeholder="${axiom.prompt}"></textarea>
+        <p class="count" data-count>0 / ${MAX_FRACTURE}</p>
+        <p class="note" data-note="fracture"></p>
+      </div>
+    </div>
+  `;
+
+  // Conviction drives the stone rising in the shaft.
+  const slider = column.querySelector("[data-conviction]");
+  const fill = column.querySelector("[data-fill]");
+  const read = column.querySelector("[data-read]");
+  const paint = () => {
+    fill.style.height = slider.value + "%";
+    read.textContent = slider.value;
+  };
+  slider.addEventListener("input", paint);
+  paint();
+
+  // A written fracture point cracks the line.
+  const fracture = column.querySelector("[data-fracture]");
+  const count = column.querySelector("[data-count]");
+  fracture.addEventListener("input", () => {
+    count.textContent = fracture.value.length + " / " + MAX_FRACTURE;
+    column.dataset.fractured = fracture.value.trim().length >= MIN_FRACTURE ? "true" : "false";
+  });
+
+  portico.append(column);
+}
+
+/* ── Reading and clearing ──────────────────────────────────── */
+function columnFor(key) {
+  return portico.querySelector(`[data-axiom="${key}"]`);
+}
+
+function readForm() {
+  const payload = {};
+  for (const axiom of AXIOMS) {
+    const column = columnFor(axiom.key);
+    const chosen = column.querySelector("input[type=radio]:checked");
+    payload[axiom.key] = {
+      stance: chosen ? chosen.value : null,
+      conviction: Number(column.querySelector("[data-conviction]").value),
+      breaking_point: column.querySelector("[data-fracture]").value.trim()
+    };
+  }
+  return payload;
+}
+
+function clearNotes() {
+  alertBox.textContent = "";
+  for (const axiom of AXIOMS) {
+    const column = columnFor(axiom.key);
+    column.removeAttribute("data-invalid");
+    column.querySelectorAll("[data-note]").forEach((note) => { note.textContent = ""; });
+  }
+}
+
+function markField(path, message) {
+  const [key, field] = path.split(".");
+  const column = columnFor(key);
+  if (!column) return;
+  column.dataset.invalid = "true";
+  const slot = field === "breaking_point" ? "fracture" : field === "stance" ? "stance" : null;
+  const note = slot ? column.querySelector(`[data-note="${slot}"]`) : null;
+  if (note) note.textContent = message;
+}
+
+/* Checked here as well as on the server, so an obviously incomplete audit
+   costs nothing. The server remains the authority. */
+function findLocalProblems(payload) {
+  const problems = {};
+  for (const axiom of AXIOMS) {
+    const entry = payload[axiom.key];
+    if (!entry.stance) {
+      problems[`${axiom.key}.stance`] = "Choose the default that fits you most of the time.";
+    }
+    if (entry.breaking_point.length === 0) {
+      problems[`${axiom.key}.breaking_point`] = "Name the condition that would change your mind.";
+    } else if (entry.breaking_point.length < MIN_FRACTURE) {
+      problems[`${axiom.key}.breaking_point`] = "Too short to read. Say a little more.";
+    }
+  }
+  return problems;
+}
+
+/* ── Render ────────────────────────────────────────────────── */
+function render(data) {
+  document.getElementById("r-archetype").textContent = data.composite_archetype;
+  document.getElementById("r-rigidity").textContent = "Rigidity · " + data.rigidity_index;
+  document.getElementById("r-summary").textContent = data.executive_summary;
+  document.getElementById("r-stress").textContent = data.stress_response_prediction;
+
+  for (const axiom of AXIOMS) {
+    document.getElementById("r-" + axiom.key).textContent =
+      data.axiom_breakdown[axiom.key + "_label"];
+  }
+
+  const list = document.getElementById("r-blindspots");
+  list.replaceChildren(...data.blind_spots.map((item) => {
+    const li = document.createElement("li");
+    li.textContent = item;
+    return li;
+  }));
+
+  result.hidden = false;
+  result.scrollIntoView({
+    behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth",
+    block: "start"
+  });
+}
+
+/* ── Submit ────────────────────────────────────────────────── */
+form.addEventListener("submit", async (event) => {
+  event.preventDefault();
+  clearNotes();
+
+  const payload = readForm();
+  const local = findLocalProblems(payload);
+  if (Object.keys(local).length > 0) {
+    for (const [path, message] of Object.entries(local)) markField(path, message);
+    const count = Object.keys(local).length;
+    alertBox.textContent = count === 1
+      ? "One answer still needs attention. It is marked below."
+      : `${count} answers still need attention. They are marked below.`;
+    columnFor(Object.keys(local)[0].split(".")[0]).scrollIntoView({ block: "center" });
+    return;
+  }
+
+  runButton.disabled = true;
+  runButton.textContent = "Auditing…";
+
+  try {
+    const response = await fetch("/api/diagnose", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
+    const data = await response.json();
+
+    if (!response.ok) {
+      const error = data.error ?? {};
+      if (error.fields) {
+        for (const [path, message] of Object.entries(error.fields)) markField(path, message);
+      }
+      alertBox.textContent = error.message ?? "The audit could not run. Try again.";
+      return;
+    }
+
+    render(data);
+  } catch {
+    alertBox.textContent = "The audit could not reach the engine. Check your connection and try again.";
+  } finally {
+    runButton.disabled = false;
+    runButton.textContent = "Run the audit";
+  }
+});
+</script>
+</body>
+</html>
