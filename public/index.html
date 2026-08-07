@@ -45,7 +45,7 @@ body{
   background-size:4px 4px;
 }
 
-.wrap{max-width:1180px;margin:0 auto;padding:clamp(2.5rem,7vw,5rem) clamp(1.25rem,4vw,2.5rem) 4rem;}
+.wrap{max-width:1260px;margin:0 auto;padding:clamp(2.5rem,7vw,5rem) clamp(1.25rem,4vw,2.5rem) 4rem;}
 
 /* Shared atoms ─────────────────────────────────────────────── */
 .eyebrow{
@@ -106,7 +106,27 @@ h1,h2,h3{font-family:var(--display);font-weight:400;letter-spacing:.01em;margin:
   color:var(--verdigris);
 }
 .capital h2{font-size:1.375rem;margin:.4rem 0 .3rem;}
-.capital .question{margin:0;font-size:.875rem;line-height:1.45;color:#5b615c;}
+.capital .question{margin:0 0 .875rem;font-size:.875rem;line-height:1.45;color:#5b615c;}
+
+/* The situation. Set slightly larger than the meta text around it, because
+   this is the thing being answered — everything else is signposting. */
+.capital .scenario{
+  margin:0;
+  padding-top:.875rem;
+  border-top:1px solid rgba(43,48,44,.13);
+  font-size:.9375rem;
+  line-height:1.55;
+}
+
+/* Capitals share a floor so every shaft begins on the same line. An
+   entablature that steps up and down is not an entablature. */
+@media (min-width:640px){
+  .capital{min-height:19.5rem;display:flex;flex-direction:column;}
+  .capital .scenario{margin-top:auto;}
+}
+@media (min-width:1024px){
+  .capital{min-height:22.5rem;}
+}
 
 /* The shaft doubles as the conviction gauge. Stone rises from the
    base as weight is added — the flutes read through the fill. */
@@ -296,9 +316,9 @@ button.run:disabled{background:var(--patina);cursor:progress;}
 
   <header class="masthead">
     <p class="eyebrow">Four-axiom self-audit</p>
-    <h1>Everyone can state a principle.<br>Fewer can state <em>where it breaks.</em></h1>
-    <p>Four columns, one for each axiom your decisions rest on. For each, name your default, say how much weight it carries, and then name the condition that would make you abandon it.</p>
-    <p>The audit reads the second answer against the first. That distance — between what you claim and where you would fold — is the whole finding.</p>
+    <h1>Anyone can state a principle.<br>Fewer can state <em>where it breaks.</em></h1>
+    <p>Four situations, one for each axiom your decisions rest on. For each: say what you would actually do, how much weight that answer carries, and then name the condition that would make you do the opposite.</p>
+    <p>The audit reads the second answer against the first. That distance — between what you would say on Friday and where you would fold on Monday — is the whole finding.</p>
   </header>
 
   <!-- The pediment rises only once all four columns stand. -->
@@ -360,43 +380,47 @@ button.run:disabled{background:var(--patina);cursor:progress;}
 const AXIOMS = [
   {
     key: "epistemology", numeral: "I", name: "Epistemology",
-    question: "How you decide something is true.",
+    question: "How you decide what is true.",
+    scenario: "A change you made six weeks ago. The numbers say it is working. The three people who use it every day say it has made their work worse. Both readings cannot be right, and a decision is due.",
     stances: [
-      ["A", "First principles", "I reason from foundations I trust before I look at the data."],
-      ["B", "Measured evidence", "I trust what has been measured, and distrust what has not."],
-      ["C", "Working systems", "I trust whatever survives contact with a working system over time."]
+      ["A", "Interrogate the measure", "Work out what the change was supposed to do, then ask whether the numbers are measuring that at all."],
+      ["B", "Widen the sample", "Three people are an anecdote. Hold the change and gather enough to see the real picture."],
+      ["C", "Watch the workarounds", "Go and see what people actually do on Monday. The workarounds will tell you more than either source."]
     ],
-    prompt: "What kind of finding would override your usual way of establishing truth?"
+    prompt: "What would it take to make you act on the side you have just set aside?"
   },
   {
     key: "ethics", numeral: "II", name: "Ethics",
-    question: "How you decide something is permissible.",
+    question: "How you decide what is permissible.",
+    scenario: "An agreement signs on Friday. You have found a flaw in your own work that the other side has not spotted and probably never will. Raising it now most likely costs the agreement, and the team is counting on it.",
     stances: [
-      ["A", "Principle", "Some lines hold regardless of what the outcome would be."],
-      ["B", "Consequence", "The right act is the one with the best net outcome for those affected."],
-      ["C", "Protocol", "I set the exceptions in advance, in calm conditions, and follow them under pressure."]
+      ["A", "Disclose before signing", "They should decide with the full picture. What it costs is not the question being asked."],
+      ["B", "Weigh the actual harm", "Judge the real damage against the real cost. A small flaw and a dozen livelihoods is not a close call."],
+      ["C", "Follow the standing rule", "Do whatever you already agreed to do in this case. If you agreed nothing, disclose, then write the rule tonight."]
     ],
-    prompt: "What pressure has actually moved this line before, or would?"
+    prompt: "How small would the flaw have to be, or how high the cost, before you chose differently? Name the threshold."
   },
   {
     key: "ontology", numeral: "III", name: "Ontology",
-    question: "How you process what you cannot control.",
+    question: "How you handle what you cannot move.",
+    scenario: "For two years you have argued for a change your organisation keeps refusing. The stated reason is different every time. Someone newer asks you, sincerely, whether it is worth raising again.",
     stances: [
-      ["A", "Agency", "Most constraints are softer than they look, so I push."],
-      ["B", "Acceptance", "I spend effort only where I have leverage, and let the rest go."],
-      ["C", "Structure", "Outcomes are mostly set by conditions upstream of anyone's intent."]
+      ["A", "Raise it again, differently", "Most refusals are about framing and timing. Change the approach, not the goal."],
+      ["B", "Say so plainly and redirect", "Tell them honestly that this one will not move, and point them at something that will."],
+      ["C", "Name the real constraint", "The shifting reasons are the finding. Say aloud what is actually blocking it and stop spending effort on the stated argument."]
     ],
-    prompt: "At what point do you stop pushing, or start again?"
+    prompt: "What would tell you that you had spent enough on this — a number of attempts, a signal, a date?"
   },
   {
     key: "governance", numeral: "IV", name: "Governance",
-    question: "Where you place responsibility for a failure.",
+    question: "Where you place responsibility when it goes wrong.",
+    scenario: "A serious error reaches a client. The person responsible was covering two roles that week, was tired, and was following a process that has allowed this same error through twice before.",
     stances: [
-      ["A", "The person", "Name the owner. Systems do not act, people do."],
-      ["B", "The system", "If the system permitted the failure, the system is the failure."],
-      ["C", "The incentive", "People follow what is rewarded, so change the reward rather than the rule."]
+      ["A", "Name it with the person", "Someone still made the call. Say so directly to them, without an audience, and then fix the process."],
+      ["B", "Hold the process to account", "A process that permits the same error three times is the error. This person is the third symptom of it."],
+      ["C", "Change what is rewarded", "Ask why covering two roles was rewarded here in the first place. Nothing else changes until that does."]
     ],
-    prompt: "What kind of failure would make you place the blame elsewhere?"
+    prompt: "What single detail about that week would move your answer to one of the other two?"
   }
 ];
 
@@ -421,6 +445,7 @@ for (const axiom of AXIOMS) {
       <span class="numeral">${axiom.numeral}</span>
       <h2>${axiom.name}</h2>
       <p class="question">${axiom.question}</p>
+      <p class="scenario">${axiom.scenario}</p>
     </div>
     <div class="gauge" aria-hidden="true">
       <div class="gauge__fill" data-fill></div>
@@ -428,7 +453,7 @@ for (const axiom of AXIOMS) {
     </div>
     <div class="stack">
       <div class="field">
-        <p class="eyebrow" id="${axiom.key}-stance-label">Your default</p>
+        <p class="eyebrow" id="${axiom.key}-stance-label">What you would do</p>
         <div class="stances" role="radiogroup" aria-labelledby="${axiom.key}-stance-label">
           ${axiom.stances.map(([letter, title, text]) => `
             <label class="stance">
@@ -450,7 +475,7 @@ for (const axiom of AXIOMS) {
       <hr class="fracture">
 
       <div class="field">
-        <label class="eyebrow" for="${axiom.key}-fracture">Fracture point</label>
+        <label class="eyebrow" for="${axiom.key}-fracture">Where it breaks</label>
         <textarea id="${axiom.key}-fracture" data-fracture maxlength="${MAX_FRACTURE}"
           placeholder="${axiom.prompt}"></textarea>
         <p class="count" data-count>0 / ${MAX_FRACTURE}</p>
