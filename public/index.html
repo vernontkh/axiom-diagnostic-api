@@ -282,17 +282,47 @@ button.run:disabled{background:var(--patina);cursor:progress;}
 .labels h3{font-size:1.0625rem;margin:.4rem 0 0;}
 
 .panels{display:grid;gap:1px;margin-top:1px;background:rgba(43,48,44,.14);grid-template-columns:1fr;}
-@media (min-width:768px){.panels{grid-template-columns:3fr 2fr;}}
+@media (min-width:768px){.panels{grid-template-columns:1fr 1fr;}}
 .panels section{background:var(--marble);padding:clamp(1.25rem,3vw,1.75rem);}
-.panels h3{font-size:1.25rem;margin:.5rem 0 .875rem;}
-.panels ul{margin:0;padding:0;list-style:none;}
-.panels li{position:relative;padding-left:1.375rem;margin-bottom:.875rem;font-size:.9375rem;}
-.panels li:last-child{margin-bottom:0;}
-.panels li::before{
-  content:"";position:absolute;left:0;top:.55rem;
-  width:.5rem;height:2px;background:var(--iron);
+.panels h3{font-size:1.1875rem;margin:.5rem 0 1.25rem;}
+
+/* A finding: heading, substance, and — where it matters — one thing to do.
+   The marker on the left is the only place tone is carried, so the two
+   columns read as a pair rather than as praise and blame. */
+.findings{display:flex;flex-direction:column;gap:1.375rem;}
+.finding{position:relative;padding-left:1.125rem;}
+.finding::before{
+  content:"";position:absolute;left:0;top:.5rem;bottom:.15rem;width:2px;
+  background:var(--verdigris);
 }
-.panels p{margin:0;font-size:.9375rem;}
+.finding[data-tone="work"]::before{background:var(--iron);}
+.finding h4{
+  font:400 1.0625rem/1.3 var(--display);
+  margin:0 0 .375rem;
+}
+.finding p{margin:0;font-size:.9375rem;line-height:1.6;color:#454b46;}
+
+/* The bridge is the reason a friction entry is publishable at all. */
+.finding .bridge{
+  margin-top:.625rem;padding-top:.625rem;
+  border-top:1px solid rgba(43,48,44,.12);
+  font-size:.9063rem;
+}
+.finding .bridge span{
+  display:block;
+  font:500 .625rem/1 var(--mono);letter-spacing:.16em;text-transform:uppercase;
+  color:var(--verdigris);margin-bottom:.375rem;
+}
+
+/* Set apart from the panels: this one is a note, not a finding. */
+.under-load{
+  margin-top:1px;background:var(--marble-deep);
+  padding:clamp(1.25rem,3vw,1.75rem);
+  border-top:1px solid rgba(43,48,44,.14);
+}
+.under-load p:last-child{
+  margin:.625rem 0 0;max-width:52rem;font-size:.9375rem;line-height:1.6;
+}
 
 /* Inscription — the one thing that should outlast the result ── */
 .inscription{
@@ -338,15 +368,33 @@ button.run:disabled{background:var(--patina);cursor:progress;}
     </div>
     <div class="panels">
       <section>
-        <p class="eyebrow">Internal friction</p>
-        <h3>Where your answers disagree with each other</h3>
-        <ul id="r-blindspots"></ul>
+        <p class="eyebrow">What is working</p>
+        <h3>Your strengths, and what each one costs</h3>
+        <div class="findings" id="r-strengths"></div>
       </section>
       <section>
-        <p class="eyebrow">Under load</p>
-        <h3>When the system fails without warning</h3>
-        <p id="r-stress"></p>
+        <p class="eyebrow">What to work on</p>
+        <h3>Places to improve</h3>
+        <div class="findings" id="r-growth"></div>
       </section>
+    </div>
+
+    <div class="panels">
+      <section>
+        <p class="eyebrow">Working with others</p>
+        <h3>Styles that complement yours</h3>
+        <div class="findings" id="r-complements"></div>
+      </section>
+      <section>
+        <p class="eyebrow">Working with others</p>
+        <h3>Styles likely to pull against yours</h3>
+        <div class="findings" id="r-friction"></div>
+      </section>
+    </div>
+
+    <div class="under-load">
+      <p class="eyebrow">When something fails without warning</p>
+      <p id="r-stress"></p>
     </div>
   </section>
 
@@ -565,7 +613,8 @@ function findLocalProblems(payload) {
 /* ── Render ────────────────────────────────────────────────── */
 function render(data) {
   document.getElementById("r-archetype").textContent = data.composite_archetype;
-  document.getElementById("r-rigidity").textContent = "Rigidity · " + data.rigidity_index;
+  document.getElementById("r-rigidity").textContent =
+    "How firmly you hold these · " + data.rigidity_index;
   document.getElementById("r-summary").textContent = data.executive_summary;
   document.getElementById("r-stress").textContent = data.stress_response_prediction;
 
@@ -574,12 +623,40 @@ function render(data) {
       data.axiom_breakdown[axiom.key + "_label"];
   }
 
-  const list = document.getElementById("r-blindspots");
-  list.replaceChildren(...data.blind_spots.map((item) => {
-    const li = document.createElement("li");
-    li.textContent = item;
-    return li;
-  }));
+  /* Built with textContent throughout. Everything here originates from a
+     language model reading text the participant typed, so it is never
+     inserted as markup. */
+  function findings(target, items, tone) {
+    const host = document.getElementById(target);
+    host.replaceChildren(...items.map((item) => {
+      const block = document.createElement("article");
+      block.className = "finding";
+      if (tone) block.dataset.tone = tone;
+
+      const heading = document.createElement("h4");
+      heading.textContent = item.title;
+
+      const detail = document.createElement("p");
+      detail.textContent = item.detail;
+
+      block.append(heading, detail);
+
+      if (item.bridge) {
+        const bridge = document.createElement("p");
+        bridge.className = "bridge";
+        const label = document.createElement("span");
+        label.textContent = "Try this";
+        bridge.append(label, document.createTextNode(item.bridge));
+        block.append(bridge);
+      }
+      return block;
+    }));
+  }
+
+  findings("r-strengths", data.strengths, "keep");
+  findings("r-growth", data.growth_areas, "work");
+  findings("r-complements", data.working_relationships.complements, "keep");
+  findings("r-friction", data.working_relationships.friction, "work");
 
   result.hidden = false;
   result.scrollIntoView({
