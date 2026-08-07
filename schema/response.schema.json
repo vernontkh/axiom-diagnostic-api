@@ -10,13 +10,36 @@
     "axiom_breakdown",
     "executive_summary",
     "rigidity_index",
-    "blind_spots",
+    "strengths",
+    "growth_areas",
+    "working_relationships",
     "stress_response_prediction"
   ],
+  "definitions": {
+    "Finding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["title", "detail"],
+      "properties": {
+        "title": { "type": "string", "description": "Two to six words naming the finding." },
+        "detail": { "type": "string", "description": "Two to three sentences of substance." }
+      }
+    },
+    "FrictionFinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["title", "detail", "bridge"],
+      "properties": {
+        "title": { "type": "string", "description": "A working style, never a kind of person." },
+        "detail": { "type": "string", "description": "Where the two approaches pull against each other." },
+        "bridge": { "type": "string", "description": "Something practical the reader can do about it." }
+      }
+    }
+  },
   "properties": {
     "composite_archetype": {
       "type": "string",
-      "description": "Two to four words describing how this configuration resolves trade-offs."
+      "description": "Two to four words describing how this configuration decides. Descriptive, never a verdict."
     },
     "axiom_breakdown": {
       "type": "object",
@@ -36,27 +59,53 @@
     },
     "executive_summary": {
       "type": "string",
-      "description": "Two to three sentences on trade-offs under pressure."
+      "description": "Two to three sentences on deciding under pressure. Mechanism, never motive."
     },
     "rigidity_index": {
       "type": "string",
       "enum": [
-        "Low (Adaptive Operator)",
-        "Moderate (Balanced)",
-        "High (Dogmatic)"
+        "Low — adapts readily",
+        "Moderate — balanced",
+        "High — holds firm"
       ],
-      "description": "Judged on the specificity of the fracture points, not on the height of the conviction values."
+      "description": "Judged on the specificity of the breaking points, not on the height of the conviction values."
     },
-    "blind_spots": {
+    "strengths": {
       "type": "array",
-      "minItems": 1,
-      "maxItems": 4,
-      "items": { "type": "string" },
-      "description": "Each item names one friction between a stated stance and a stated fracture point."
+      "minItems": 2,
+      "maxItems": 3,
+      "items": { "$ref": "#/definitions/Finding" },
+      "description": "Each is evidenced from the participant's own words and names what the strength costs."
+    },
+    "growth_areas": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 3,
+      "items": { "$ref": "#/definitions/Finding" },
+      "description": "Each names a tension between stance and breaking point, and one concrete thing to try."
+    },
+    "working_relationships": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["complements", "friction"],
+      "properties": {
+        "complements": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 2,
+          "items": { "$ref": "#/definitions/Finding" }
+        },
+        "friction": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 2,
+          "items": { "$ref": "#/definitions/FrictionFinding" }
+        }
+      }
     },
     "stress_response_prediction": {
       "type": "string",
-      "description": "Likely first reaction when the primary system fails without warning."
+      "description": "Likely first reaction when something fails without warning. Observable behaviour only."
     }
   }
 }
