@@ -1,8 +1,10 @@
 # The Portico
 
-A four-axiom self-audit. It asks what you believe, then asks where that belief gives way, and reports the distance between the two answers.
+A four-axiom self-audit. It puts you in four situations, asks what you would actually do, then asks what would make you do the opposite — and reports the distance between the two answers.
 
 Most self-assessment instruments read the first answer. This one reads the second. A stated principle costs nothing; the condition under which you would abandon it is the operating rule you actually run on.
+
+The questions are scenarios rather than abstractions, deliberately. "How do you decide what is true?" invites an answer that commits to nothing. "The numbers say it works and the three people using it daily say it does not, and a decision is due" does not. The scenarios stay free of any industry, so the audit works on anyone who has had to decide something with other people in the room.
 
 ---
 
@@ -40,6 +42,8 @@ test/                  Zero-dependency tests via node:test.
 
 ## Decisions worth explaining
 
+**The scenarios live in two places and must be edited together.** `AXIOMS` in `public/index.html` renders them; `SYSTEM_INSTRUCTION` in `lib/prompt.js` teaches the model what stance A, B and C mean within each situation. Change one without the other and the model will read a stance as something the participant never chose. The API contract is unaffected — the payload still carries only the letter — so this is the one deliberate duplication in the project, and it is the first thing to check when the output stops making sense.
+
 **The prompt does not contain the response schema.** It is passed once via `responseSchema`. Duplicating a schema into the prompt when it is already in the config measurably lowers output quality.
 
 **`propertyOrdering` is set explicitly.** Without it the model emits properties alphabetically, which puts `axiom_breakdown` before `composite_archetype` and asks the model to describe a conclusion it has not reached yet.
@@ -60,7 +64,7 @@ test/                  Zero-dependency tests via node:test.
 
 ## The interface
 
-Four fluted columns, one per axiom. Conviction fills the shaft from the base, because conviction is weight placed on a support. Writing a fracture point cracks the hairline at the base of the column. Complete all four and the pediment rises above them carrying the archetype — a pediment only stands if every column is there.
+Four fluted columns, one per axiom. Each capital carries a situation; the capitals share a floor so every shaft begins on the same line, because an entablature that steps up and down is not an entablature. Conviction fills the shaft from the base, since conviction is weight placed on a support. Writing a fracture point cracks the hairline beneath it. Complete all four and the pediment rises carrying the archetype — a pediment only stands if every column is there.
 
 Palette: weathered limestone, marble, basalt, oxidised bronze. Iron oxide appears nowhere except fracture and friction, so its presence always means one thing.
 
